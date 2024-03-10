@@ -14,8 +14,16 @@
 <body>
     <div class="container-fluid">
         <div class="row flex-nowrap">
-            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+            <div class="col-auto col-md-1 col-xl-1 px-sm-1 px-0 bg-dark sidebar">
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions"><i class="bi bi-list"></i></button>
+
+            <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Фон с прокруткой</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+            </div>
+            <div class="offcanvas-body">
+                
                     <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                         <span class="fs-5 d-none d-sm-inline">Menu</span>
                     </a>
@@ -92,10 +100,37 @@
                             <li><a class="dropdown-item" href="#">Sign out</a></li>
                         </ul>
                     </div>
-                </div>
+                
             </div>
-            <div class="col py-3">
-                <div id="map" class="map"></div>
+            </div>
+                
+            </div>
+            <div class="col py-3 content">
+                <div class="row">
+                    <div class="col-md-4 shadow-sm block ">
+                        <h1>блок 1</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus provident velit, atque quam sapiente expedita pariatur perspiciatis consequuntur dignissimos vitae tempore in rem vel hic! A facere inventore corporis cumque.
+                        Nobis cumque fugiat dolorem aspernatur autem magni expedita qui, adipisci corporis, voluptate consequatur sunt dicta explicabo dolorum rerum quo iste cupiditate maxime, numquam eaque vero. Odit sint accusantium praesentium tempore!
+                        Doloremque ullam quaerat error ad facere, et, expedita architecto, voluptatibus ipsum quo at illum quod! Sunt, omnis aspernatur cumque assumenda laborum corrupti qui expedita hic molestiae, sequi quas corporis temporibus.</p>
+                    </div>
+                    <div class="col-md-4 shadow-sm block">
+                        <h1>блок 2</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus provident velit, atque quam sapiente expedita pariatur perspiciatis consequuntur dignissimos vitae tempore in rem vel hic! A facere inventore corporis cumque.
+                            Nobis cumque fugiat dolorem aspernatur autem magni expedita qui, adipisci corporis, voluptate consequatur sunt dicta explicabo dolorum rerum quo iste cupiditate maxime, numquam eaque vero. Odit sint accusantium praesentium tempore!
+                            Doloremque ullam quaerat error ad facere, et, expedita architecto, voluptatibus ipsum quo at illum quod! Sunt, omnis aspernatur cumque assumenda laborum corrupti qui expedita hic molestiae, sequi quas corporis temporibus.</p>
+                    </div>
+                    <div class="col-md-3 shadow-sm block">
+                        <h1>блок 3</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus provident velit, atque quam sapiente expedita pariatur perspiciatis consequuntur dignissimos vitae tempore in rem vel hic! A facere inventore corporis cumque.
+                            Nobis cumque fugiat dolorem aspernatur autem magni expedita qui, adipisci corporis, voluptate consequatur sunt dicta explicabo dolorum rerum quo iste cupiditate maxime, numquam eaque vero. Odit sint accusantium praesentium tempore!
+                            Doloremque ullam quaerat error ad facere, et, expedita architecto, voluptatibus ipsum quo at illum quod! Sunt, omnis aspernatur cumque assumenda laborum corrupti qui expedita hic molestiae, sequi quas corporis temporibus.</p>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div id="map" class="col-md-8 map">
+                </div>
+                </div>
             </div>
         </div>
     </div>

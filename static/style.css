@@ -1,4 +1,32 @@
 .map {
     width:1280px;
     height:720px;
+    margin-left:10%;
+    
+}
+.row {
+    margin-top:10px;
+}
+.content {
+    z-index:-2;
+    background-color: #DCDCDC;
+}
+.block {
+    background-color: #fff;
+    margin-left:10px;
+}
+.sidebar {
+    width:65px;
+    display: flex;
+    justify-content: center;
+    padding:0
+}
+.btn {
+    margin-top:10px;
+    margin: 0 auto;
+    width:100%;
+    height: 50px;
+}
+.offcanvas-body{
+    background-color: #333;
 }
