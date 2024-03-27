@@ -85,21 +85,31 @@
                         </li>
                     </ul>
                     <hr>
-                    <div class="dropdown pb-4">
-                        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
-                            <span class="d-none d-sm-inline mx-1">loser</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                            <li><a class="dropdown-item" href="#">New project...</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Sign out</a></li>
-                        </ul>
+                    <div>
+                        Токен: {{.token}}
                     </div>
+                    {{if .token}}
+                        <div class="dropdown pb-4">
+                            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="https://github.com/mdo.png" alt="{{.username}}" width="30" height="30" class="rounded-circle">
+                                <span class="d-none d-sm-inline mx-1">{{.username}}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                                <li><a class="dropdown-item" href="#">New project...</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="/auth/signout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    {{else}}
+                        <div>
+                            <a href="/auth/signin">Регистрация</a>
+                            <a href="/auth/signup">Авторизация</a>
+                        </div>
+                    {{end}}
                 
             </div>
             </div>
@@ -128,6 +138,7 @@
                     
                 </div>
                 <div class="row">
+                  
                     <div id="map" class="col-md-8 map">
                 </div>
                 </div>
@@ -136,36 +147,161 @@
     </div>
     
 
-
+   
     <script>
-        var map = L.map('map', { attributionControl:true }).setView([53.7214562,91.4612220], 13,);
-        var marker = L.marker([53.7215862,91.4612620]).addTo(map);
-        var popup = L.popup()
-            .setLatLng([53.7215862,91.4612620])
-            .setContent("Мы находимся здесь!<br><b>Ул. Хакасская,25</b>")
-            .openOn(map);
-        L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-            maxZoom: 18,
-        }).addTo(map);
+             // Создание карты Leaflet
+        var map = L.map('map').setView([53.7215862, 91.4612620], 13);
+
+        
+        // L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
+        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        //     maxZoom: 18,
+        // }).addTo(map);
+     
         var googleLayer = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
             maxZoom: 18
         });
+
+// Создание объекта слоя карты OpenStreetMap
         var openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
             maxZoom: 18
         });
-    var overlayMaps = {
-    "OpenStreetMap": openStreetMapLayer,
-    "Google": googleLayer,
-};
-L.control.layers(null, overlayMaps).addTo(map);
-var elements = document.getElementsByClassName('leaflet-attribution-flag');
-  Array.from(elements).forEach(function(element) {
-      element.style.height = '0px';
-      element.style.width = '0px';
-  });
-</script>
+
+        var geojson = {{.fields}}   
+        var geojsonLayer = L.geoJSON(geojson, {
+
+            style: function(feature) {
+
+                var tluValue = feature.properties.Tlu;
+                var color;
+
+                switch (tluValue) {
+                    case 102:
+                        color = 'red';
+                        break;
+                    case 200:
+                        color = 'blue';
+                        break;
+                    case 300:
+                        color = 'green';
+                        break;
+                    case 500:
+                        color = 'yellow';
+                        break;
+                    default:
+                        color = 'gray';
+                    }
+
+                return {
+                fillColor: color,
+                fillOpacity: 0.1,
+                color: 'black',
+                weight: 1
+                };
+            },
+
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup('Номер хозяйства : ' + feature.properties.Farm_name + '<br>Номер поля: ' + feature.properties.Id_eu +
+            '<br>TLU: ' + feature.properties.Tlu
+            + '<br>Площадь: ' + feature.properties.Area_f);
+
+            var selectedPolygon = null;
+            var originalStyle = null;
+
+            layer.on('click', function(e) {
+
+            if (e.target.options.weight === 2) {
+                // Снятие выделения с выбранного полигона
+                e.target.setStyle({ weight: 1, color:black});
+            } else {
+                // Снятие выделения с предыдущего выбранного полигона
+                geojsonLayer.eachLayer(function(layer) {
+                if (layer.options.weight === 2) {
+                    layer.setStyle({ weight: 1, color: 'black' });
+                }
+                });
+
+                // Выделение текущего полигона
+                e.target.setStyle({ weight: 2, color: 'red' });
+            }
+
+                var id_g = feature.properties.Id_eu;
+                console.log('ID value:', id_g);
+                });
+            }
+            }).addTo(map);
+
+
+            var overlayMaps = {
+            "GeoJSON": geojsonLayer,
+            "Google": googleLayer,
+            "OpenStreetMap": openStreetMapLayer,
+            
+        };
+
+        L.control.layers(null, overlayMaps, { collapsed: true }).addTo(map);
+        map.addLayer(googleLayer);
+
+        map.on('click', function(e) {
+        geojsonLayer.eachLayer(function(layer) {
+            if (layer.options.weight === 2 && layer.options.color === 'red') {
+            layer.setStyle({ weight: 1, color: 'black' });
+            }
+        });
+});
+        
+        
+        
+        // var map = L.map('map', { attributionControl: true }).setView([54.856282579, 89.459923462], 13);
+        
+        // var marker = L.marker([53.7215862, 91.4612620]).addTo(map);
+        
+        // var popup = L.popup()
+        //     .setLatLng([53.7215862, 91.4612620])
+        //     .setContent("Мы находимся здесь!<br><b>Ул. Хакасская,25</b>")
+        //     .openOn(map);
+    
+        // L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
+        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        //     maxZoom: 18
+        // }).addTo(map);
+    
+        // var googleLayer = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
+        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        //     maxZoom: 18
+        // });
+    
+        // var openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        //     maxZoom: 18
+        // });
+    
+        // var geojsonFeature = {{.fields}}
+        // var polygonStyle = {
+        //     "color": "#ff7800",
+        //     "weight": 5,
+        //     "opacity": 0.65
+        // };
+        
+        // // Добавление GeoJSON на карту
+        // L.geoJSON(geojsonFeature, {
+        //     style: polygonStyle
+        // }).addTo(map);
+    
+        // var overlayMaps = {
+        //     "OpenStreetMap": openStreetMapLayer,
+        //     "Google": googleLayer,
+        // };
+    
+        // L.control.layers(null, overlayMaps).addTo(map);
+    
+        // var elements = document.getElementsByClassName('leaflet-attribution-flag');
+        // Array.from(elements).forEach(function(element) {
+        //     element.style.height = '0px';
+        //     element.style.width = '0px';
+        // });
+    </script>
 </body>
 </html>

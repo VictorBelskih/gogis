@@ -1,22 +1,35 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/VictorBelskih/gogis"
+	"github.com/jmoiron/sqlx"
+)
 
+// интерфейс авторизации объявление методов получения данных с бд
 type Authorization interface {
+	CreateUser(user gogis.User) (int, error)
+	GetUsers() ([]gogis.User, error)
+	GetUserByUsername(username string) (gogis.User, error)
 }
 
 type FarmList interface {
 }
 
-type FarmField interface {
+type Gis interface {
+	GetField() (gogis.GeoJSON, error)
 }
 
 type Repository struct {
 	Authorization
 	FarmList
-	FarmField
+	Gis
 }
 
+// создание репозиториев
 func NewRepository(db *sqlx.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		Authorization: NewAuthPostgres(db),
+		Gis:           NewGisPostgres(db),
+	}
+
 }
