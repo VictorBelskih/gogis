@@ -1,0 +1,24 @@
+{{ template "header.html" . }}
+<div class="col py-3 content">
+    <div class="row">
+
+        <div class="col-md-4 shadow-lg block">
+            <h1>Справочник культура</h1>
+            
+                <h3>добавить запись</h3>
+                <form class="form" action="/gis/spr_cult/add" method="POST">
+                    
+                    <input class="form-control form-control-lg" type="number" name="cult_id" id="cult_id">
+                    <input class="form-control form-control-lg" type="text" name="cult_name" id="cult_name">
+                    <input class="form-control form-control-lg" type="submit" value="Создать">
+                    
+                </form>
+                 
+                            
+        </div>
+                
+    </div>                      
+</div>
+
+</body>
+</html>

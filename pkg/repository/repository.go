@@ -17,6 +17,10 @@ type FarmList interface {
 
 type Gis interface {
 	GetField() (gogis.GeoJSON, error)
+	GetFieldData() ([]gogis.Field, error)
+	GetCult() ([]gogis.Cult, error)
+	CreateCult(cult gogis.Cult) error
+	DeleteCult(id int) error
 }
 
 type Repository struct {

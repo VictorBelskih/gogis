@@ -15,6 +15,16 @@ type Authorization interface {
 
 type Gis interface {
 	GetField() (gogis.GeoJSON, error)
+	GetFieldData() ([]gogis.Field, error)
+	GetCult() ([]gogis.Cult, error)
+	CalculateTotalAreaByFieldType() (map[string]float64, error)
+	CreateCult(cult gogis.Cult) error
+	DeleteCult(id int) error
+	CalculateAverageHumusByClass() ([]HumusData, error)
+	CalculateRadionuclideSummary() (RadionuclideSummary, error)
+	AvgPhosphorByClass() ([]NutrientData, error)
+	AvgPotassiumByClass() ([]NutrientData, error)
+	TotalArea() (float64, error)
 }
 
 type FarmField interface {

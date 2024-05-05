@@ -41,8 +41,16 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", h.signIn)
 		auth.GET("/signout", h.signOut)
 	}
-
-	router.GET("/", h.homePage)
+	gis := router.Group("/")
+	{
+		gis.GET("/", h.gisPage)
+		gis.GET("/gis/spr_cult", h.sprCult)
+		gis.GET("/gis/spr_cult/addView", h.CultAddView)
+		gis.POST("/gis/spr_cult/add", h.createCult)
+		gis.POST("/gis/spr_cult/update/:id", h.createCult)
+		gis.GET("/gis/spr_cult/del/:id", h.deleteCult)
+	}
+	//router.GET("/", h.homePage)
 
 	return router
 }
