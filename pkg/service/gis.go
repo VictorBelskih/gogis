@@ -17,25 +17,38 @@ type GisService struct {
 func NewGisService(repo repository.Gis) *GisService {
 	return &GisService{repo: repo}
 }
+
+func (s *GisService) GetFieldByUser(id int, role int) (gogis.GeoJSON, error) {
+	return s.repo.GetFieldByUser(id, role)
+}
+
 func (s *GisService) GetField() (gogis.GeoJSON, error) {
 	return s.repo.GetField()
 }
-func (s *GisService) GetFieldData() ([]gogis.Field, error) {
-	return s.repo.GetFieldData()
+func (s *GisService) GetFieldData(id int, role int) ([]gogis.Field, error) {
+	return s.repo.GetFieldData(id, role)
 }
 
 func (s *GisService) GetCult() ([]gogis.Cult, error) {
 	return s.repo.GetCult()
 }
 
+func (s *GisService) GetCultByID(id int) (*gogis.Cult, error) {
+	return s.repo.GetCultByID(id)
+}
+func (s *GisService) UpdateCult(cult gogis.Cult) error {
+	return s.repo.UpdateCult(cult)
+}
 func (s *GisService) CreateCult(cult gogis.Cult) error {
 	return s.repo.CreateCult(cult)
 }
+
 func (s *GisService) DeleteCult(id int) error {
 	return s.repo.DeleteCult(id)
 }
-func (s *GisService) CalculateTotalAreaByFieldType() (map[string]float64, error) {
-	fields, err := s.repo.GetFieldData()
+
+func (s *GisService) CalculateTotalAreaByFieldType(id int, role int) (map[string]float64, error) {
+	fields, err := s.repo.GetFieldData(id, role)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +77,8 @@ func (s *GisService) CalculateTotalAreaByFieldType() (map[string]float64, error)
 	return totalAreaByFieldType, nil
 }
 
-func (s *GisService) TotalArea() (float64, error) {
-	fields, err := s.repo.GetFieldData()
+func (s *GisService) TotalArea(id int, role int) (float64, error) {
+	fields, err := s.repo.GetFieldData(id, role)
 	if err != nil {
 		return 0, err
 	}
@@ -88,8 +101,8 @@ type HumusData struct {
 	TotalArea    float64 // Общая площадь для класса
 }
 
-func (s *GisService) CalculateAverageHumusByClass() ([]HumusData, error) {
-	fields, err := s.repo.GetFieldData()
+func (s *GisService) CalculateAverageHumusByClass(id int, role int) ([]HumusData, error) {
+	fields, err := s.repo.GetFieldData(id, role)
 	if err != nil {
 		return nil, err
 	}
@@ -113,12 +126,12 @@ func (s *GisService) CalculateAverageHumusByClass() ([]HumusData, error) {
 		"Очень высокое": 6,
 	}
 
-	id := 1
+	ids := 1
 	for class, totalOrganic := range humusData {
 		totalArea := areaByClass[class]
 		average := totalOrganic / totalArea
-		result = append(result, HumusData{ID: id, Class: class, AverageValue: average, TotalArea: totalArea})
-		id++
+		result = append(result, HumusData{ID: ids, Class: class, AverageValue: average, TotalArea: totalArea})
+		ids++
 	}
 
 	// Сортируем результат по порядку, определенному в order
@@ -140,8 +153,8 @@ type RadionuclideSummary struct {
 	MaxDensitySr90   float64 // Максимальная плотность загрязнения стронцием
 }
 
-func (s *GisService) CalculateRadionuclideSummary() (RadionuclideSummary, error) {
-	fields, err := s.repo.GetFieldData()
+func (s *GisService) CalculateRadionuclideSummary(id int, role int) (RadionuclideSummary, error) {
+	fields, err := s.repo.GetFieldData(id, role)
 	if err != nil {
 		return RadionuclideSummary{}, err
 	}
@@ -193,8 +206,8 @@ type NutrientData struct {
 	TotalArea    float64
 }
 
-func (s *GisService) AvgPotassiumByClass() ([]NutrientData, error) {
-	fields, err := s.repo.GetFieldData()
+func (s *GisService) AvgPotassiumByClass(id int, role int) ([]NutrientData, error) {
+	fields, err := s.repo.GetFieldData(id, role)
 	if err != nil {
 		return nil, err
 	}
@@ -218,12 +231,12 @@ func (s *GisService) AvgPotassiumByClass() ([]NutrientData, error) {
 		"Очень высокая": 6,
 	}
 
-	id := 1
+	ids := 1
 	for class, totalPotassium := range potassiumData {
 		totalArea := areaByClass[class]
 		average := totalPotassium / totalArea
-		result = append(result, NutrientData{ID: id, Class: class, AverageValue: average, TotalArea: totalArea})
-		id++
+		result = append(result, NutrientData{ID: ids, Class: class, AverageValue: average, TotalArea: totalArea})
+		ids++
 	}
 
 	// Сортируем результат по порядку, определенному в order
@@ -234,8 +247,8 @@ func (s *GisService) AvgPotassiumByClass() ([]NutrientData, error) {
 	return result, nil
 }
 
-func (s *GisService) AvgPhosphorByClass() ([]NutrientData, error) {
-	fields, err := s.repo.GetFieldData()
+func (s *GisService) AvgPhosphorByClass(id int, role int) ([]NutrientData, error) {
+	fields, err := s.repo.GetFieldData(id, role)
 	if err != nil {
 		return nil, err
 	}
@@ -259,12 +272,12 @@ func (s *GisService) AvgPhosphorByClass() ([]NutrientData, error) {
 		"Очень высокая": 6,
 	}
 
-	id := 1
+	ids := 1
 	for class, totalPhosphorus := range phosphorusData {
 		totalArea := areaByClass[class]
 		average := totalPhosphorus / totalArea
-		result = append(result, NutrientData{ID: id, Class: class, AverageValue: average, TotalArea: totalArea})
-		id++
+		result = append(result, NutrientData{ID: ids, Class: class, AverageValue: average, TotalArea: totalArea})
+		ids++
 	}
 
 	// Сортируем результат по порядку, определенному в order

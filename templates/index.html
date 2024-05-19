@@ -1,4 +1,6 @@
 {{ template "header.html" . }}
+
+
             <div class="col py-3 content">
                 <div class="row">
                     <div class="col-md-4 shadow-lg block ">
@@ -52,19 +54,19 @@
                                     <td>{{printf "%.4f" .avgRad.MaxStrontium}} Бк/кг</td>
                                 </tr>
                                 <tr>
-                                    <td>Средняя плотность загрязнения цезием:</td>
+                                    <td>Средняя плотность<br> загрязнения цезием:</td>
                                     <td>{{printf "%.4f" .avgRad.AvgDensityCs137}} Ku/кв. км </td>
                                 </tr>
                                 <tr>
-                                    <td>Средняя плотность загрязнения стронцием:</td>
+                                    <td>Средняя плотность<br> загрязнения стронцием:</td>
                                     <td>{{printf "%.4f" .avgRad.AvgDensitySr90}} Ku/кв. км</td>
                                 </tr>
                                 <tr>
-                                    <td>Максимальная плотность загрязнения цезием:</td>
+                                    <td>Максимальная плотность<br> загрязнения цезием:</td>
                                     <td>{{printf "%.4f" .avgRad.MaxDensityCs137}} Ku/кв. км</td>
                                 </tr>
                                 <tr>
-                                    <td>Максимальная плотность загрязнения стронцием:</td>
+                                    <td>Максимальная плотность<br> загрязнения стронцием:</td>
                                     <td>{{printf "%.4f" .avgRad.MaxDensitySr90}} Ku/кв. км</td>
                                 </tr>
                             </tbody>
@@ -110,7 +112,7 @@
     </div>
     
 
-   
+  
 <script>
 
 
@@ -127,7 +129,9 @@ var openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}
     maxZoom: 18
 });
 
-var geojson = {{.fields}};
+    geojson = {{.userField}}; // замените на вашу переменную userField
+
+
 
 
 var colorMap = {

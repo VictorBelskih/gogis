@@ -13,7 +13,12 @@
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="Email" required><br><br>
-
+        <label for="role">role:</label>
+        <select name="Role" id="role">
+            {{range .roles}}
+                <option value="{{.Id}}">{{.Role}}</option>
+            {{end}}
+        </select>
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="Password" required><br><br>
 

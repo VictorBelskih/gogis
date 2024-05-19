@@ -11,20 +11,24 @@ type Authorization interface {
 	GetUsers() ([]gogis.User, error)
 	AuthenticateUser(username, password string) (string, error)
 	ParseJWTToken(tokenString string) (gogis.User, error)
+	GetRole() ([]gogis.Role, error)
 }
 
 type Gis interface {
 	GetField() (gogis.GeoJSON, error)
-	GetFieldData() ([]gogis.Field, error)
+	GetFieldData(id int, role int) ([]gogis.Field, error)
+	GetFieldByUser(id int, role int) (gogis.GeoJSON, error)
 	GetCult() ([]gogis.Cult, error)
-	CalculateTotalAreaByFieldType() (map[string]float64, error)
+	GetCultByID(id int) (*gogis.Cult, error)
+	UpdateCult(cult gogis.Cult) error
+	CalculateTotalAreaByFieldType(id int, role int) (map[string]float64, error)
 	CreateCult(cult gogis.Cult) error
 	DeleteCult(id int) error
-	CalculateAverageHumusByClass() ([]HumusData, error)
-	CalculateRadionuclideSummary() (RadionuclideSummary, error)
-	AvgPhosphorByClass() ([]NutrientData, error)
-	AvgPotassiumByClass() ([]NutrientData, error)
-	TotalArea() (float64, error)
+	CalculateAverageHumusByClass(id int, role int) ([]HumusData, error)
+	CalculateRadionuclideSummary(id int, role int) (RadionuclideSummary, error)
+	AvgPhosphorByClass(id int, role int) ([]NutrientData, error)
+	AvgPotassiumByClass(id int, role int) ([]NutrientData, error)
+	TotalArea(id int, role int) (float64, error)
 }
 
 type FarmField interface {

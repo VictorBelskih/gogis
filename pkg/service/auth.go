@@ -45,6 +45,9 @@ func (s *AuthService) CreateUser(user gogis.User) (int, error) {
 func (s *AuthService) GetUsers() ([]gogis.User, error) {
 	return s.repo.GetUsers()
 }
+func (s *AuthService) GetRole() ([]gogis.Role, error) {
+	return s.repo.GetRole()
+}
 
 // сравнение паролей
 func (s *AuthService) ComparePasswords(inputPassword, hashedPassword string) error {
@@ -64,6 +67,7 @@ func (s *AuthService) GenerateJWTToken(user gogis.User) (string, error) {
 	claims["id"] = user.ID
 	claims["username"] = user.Username
 	claims["email"] = user.Email
+	claims["role"] = user.Role                            // Добавление роли пользователя
 	claims["exp"] = time.Now().Add(time.Hour * 12).Unix() // Установка срока действия токена на 12 часов
 
 	// Подпись токена с секретным ключом
@@ -74,6 +78,7 @@ func (s *AuthService) GenerateJWTToken(user gogis.User) (string, error) {
 
 	return tokenString, nil
 }
+
 func (s *AuthService) ParseJWTToken(tokenString string) (gogis.User, error) {
 	// Проверка секретного ключа
 	secretKey := os.Getenv("JWT_SECRET")
@@ -95,10 +100,17 @@ func (s *AuthService) ParseJWTToken(tokenString string) (gogis.User, error) {
 		username := claims["username"].(string)
 		email := claims["email"].(string)
 
+		roleFloat64, ok := claims["role"].(float64) // Извлечение роли пользователя как float64
+		if !ok {
+			return gogis.User{}, errors.New("Неверный формат роли в токене")
+		}
+		role := int(roleFloat64) // Преобразование роли в int
+
 		user := gogis.User{
 			ID:       userID,
 			Username: username,
 			Email:    email,
+			Role:     role, // Установка роли пользователя
 		}
 
 		return user, nil

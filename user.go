@@ -5,4 +5,5 @@ type User struct {
 	Username     string `json:"Username" binding:"required"`
 	PasswordHash string `json:"-"`
 	Email        string `json:"Email" binding:"required"`
+	Role         int    `json:"role"`
 }
