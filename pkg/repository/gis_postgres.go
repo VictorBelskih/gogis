@@ -125,7 +125,12 @@ func (r *GisPostgres) GetField() (gogis.GeoJSON, error) {
 }
 func (r *GisPostgres) GetFieldByUser(id int, role int) (gogis.GeoJSON, error) {
 	var fields []gogis.Field // Используйте вашу структуру Field
-	query := `SELECT field_param.*, ST_AsGeoJSON(geom) as geom_json, tlu.tlu_name, cult.title, cult2.title as title2, farm.id as id_farm, farm.id_user FROM field_param
+	query := `SELECT field_param.*, ST_AsGeoJSON(geom) as geom_json, 
+	tlu.tlu_name, cult.title, cult2.title as title2, farm.id as id_farm, farm.id_user, kamenistost.name as kamn,
+	type_pojv.name as t_pojv	
+	FROM field_param
+	LEFT JOIN kamenistost ON field_param.DGRD_ST=kamenistost.id
+	LEFT JOIN type_pojv ON field_param.s_type=type_pojv.id_pojv
 	LEFT JOIN tlu ON field_param.tlu = tlu.id
 	LEFT JOIN cult ON field_param.crop = cult.id
 	LEFT JOIN cult as cult2 ON field_param.crop = cult2.id
@@ -224,6 +229,8 @@ func (r *GisPostgres) GetFieldByUser(id int, role int) (gogis.GeoJSON, error) {
 			"gydr_c":      field.Gydr_c,
 			"Title":       field.Title,
 			"Title2":      field.Title2,
+			"Kamn":        field.Kamn,
+			"T_pojv":      field.T_pojv,
 		}
 
 		feature := gogis.Feature{
@@ -305,6 +312,58 @@ func (r *GisPostgres) UpdateCult(cult gogis.Cult) error {
 
 func (r *GisPostgres) DeleteCult(id int) error {
 	query := "DELETE FROM cult WHERE id = $1"
+	_, err := r.db.Exec(query, id)
+	return err
+}
+func (r *GisPostgres) GetDistrict() ([]gogis.District, error) {
+	var district []gogis.District
+	query := "SELECT * FROM district"
+	err := r.db.Select(&district, query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return district, nil
+}
+
+func (r *GisPostgres) GetFarm() ([]gogis.Farm, error) {
+	var farms []gogis.Farm
+	query := "SELECT * FROM farm"
+	err := r.db.Select(&farms, query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return farms, nil
+}
+func (r *GisPostgres) GetFarmByID(id int) (*gogis.Farm, error) {
+	var farm gogis.Farm
+	query := "SELECT * FROM farm WHERE id = $1"
+	err := r.db.Get(&farm, query, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &farm, nil
+}
+
+func (r *GisPostgres) CreateFarm(farm gogis.Farm) error {
+	query := "INSERT INTO farm (id, name, district, id_user) VALUES ($1, $2, $3, $4)"
+	_, err := r.db.Exec(query, farm.Id, farm.Name, farm.District, farm.Id_user)
+	return err
+}
+
+func (r *GisPostgres) UpdateFarm(farm gogis.Farm) error {
+	query := "UPDATE farm SET id = $2, name = $3, district = $4, id_user=$5 WHERE id = $1"
+	_, err := r.db.Exec(query, farm.OldId, farm.Id, farm.Name, farm.District, farm.Id_user)
+	return err
+}
+
+func (r *GisPostgres) DeleteFarm(id int) error {
+	query := "DELETE FROM farm WHERE id = $1"
 	_, err := r.db.Exec(query, id)
 	return err
 }

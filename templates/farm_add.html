@@ -1,0 +1,40 @@
+{{ template "header.html" . }}
+<div class="col py-3 content">
+    <div class="row">
+
+        <div class="col-md-4 shadow-lg block">
+            <h1>Справочник хозяйства</h1>
+            
+                <h3>Добавить запись</h3>
+                <form class="form" action="/gis/spr_farm/add" method="POST">
+                    <label for="farm_id">Идентификатор:</label>
+                    <input class="form-control form-control-lg" type="number" name="farm_id" id="farm_id">
+                    <label for="farm_name">Наименование:</label>
+                    <input class="form-control form-control-lg" type="text" name="farm_name" id="farm_name">
+                    <br>
+                    <label for="district">Район:</label>
+                    <select class="form-control form-control-lg" name="district" id="district">
+                         {{range .district}}
+                        <option value="{{.Id}}">{{.Name}}</option>
+                        {{end}}
+                    </select>
+                    <br>
+                    <label for="user">Пользователь:</label>
+                    <select class="form-control form-control-lg" name="user" id="user">
+                        {{range .user}}
+                        <option value="{{.ID}}">{{.Username}}</option>
+                        {{end}}
+                    </select>
+                    <br>
+                    <input class="form-control form-control-lg" type="submit" value="Создать">
+                    
+                </form>
+                 
+                            
+        </div>
+                
+    </div>                      
+</div>
+
+</body>
+</html>

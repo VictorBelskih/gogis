@@ -96,6 +96,8 @@ type Field struct {
 	Class_p     string  `json:"class_p"`
 	Title       string  `json:"title"`
 	Title2      string  `json:"Title2"`
+	Kamn        string  `json:"Kamn"`
+	T_pojv      string  `json:"T_pojv"`
 }
 
 // package gogis

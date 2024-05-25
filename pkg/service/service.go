@@ -15,20 +15,32 @@ type Authorization interface {
 }
 
 type Gis interface {
+	//поля
 	GetField() (gogis.GeoJSON, error)
 	GetFieldData(id int, role int) ([]gogis.Field, error)
 	GetFieldByUser(id int, role int) (gogis.GeoJSON, error)
-	GetCult() ([]gogis.Cult, error)
-	GetCultByID(id int) (*gogis.Cult, error)
-	UpdateCult(cult gogis.Cult) error
+
 	CalculateTotalAreaByFieldType(id int, role int) (map[string]float64, error)
-	CreateCult(cult gogis.Cult) error
-	DeleteCult(id int) error
 	CalculateAverageHumusByClass(id int, role int) ([]HumusData, error)
 	CalculateRadionuclideSummary(id int, role int) (RadionuclideSummary, error)
 	AvgPhosphorByClass(id int, role int) ([]NutrientData, error)
 	AvgPotassiumByClass(id int, role int) ([]NutrientData, error)
 	TotalArea(id int, role int) (float64, error)
+
+	//культура
+	GetCult() ([]gogis.Cult, error)
+	GetCultByID(id int) (*gogis.Cult, error)
+	UpdateCult(cult gogis.Cult) error
+	CreateCult(cult gogis.Cult) error
+	DeleteCult(id int) error
+
+	//хозяйства
+	GetFarm() ([]gogis.Farm, error)
+	GetFarmByID(id int) (*gogis.Farm, error)
+	GetDistrict() ([]gogis.District, error)
+	CreateFarm(farm gogis.Farm) error
+	DeleteFarm(id int) error
+	UpdateFarm(farm gogis.Farm) error
 }
 
 type FarmField interface {

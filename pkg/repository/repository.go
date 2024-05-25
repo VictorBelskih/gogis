@@ -25,6 +25,12 @@ type Gis interface {
 	DeleteCult(id int) error
 	UpdateCult(cult gogis.Cult) error
 	GetFieldByUser(id int, role int) (gogis.GeoJSON, error)
+	GetFarm() ([]gogis.Farm, error)
+	GetDistrict() ([]gogis.District, error)
+	CreateFarm(farm gogis.Farm) error
+	GetFarmByID(id int) (*gogis.Farm, error)
+	DeleteFarm(id int) error
+	UpdateFarm(farm gogis.Farm) error
 }
 
 type Repository struct {

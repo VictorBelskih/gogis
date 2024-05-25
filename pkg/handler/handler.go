@@ -49,6 +49,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		gis.GET("/gis/spr_cult/updateView/:id", h.CultUpdateView)
 		gis.POST("/gis/spr_cult/update", h.updateCult)
 		gis.GET("/gis/spr_cult/del/:id", h.deleteCult)
+		gis.GET("/gis/spr_farm", h.sprFarm)
+		gis.GET("/gis/spr_farm/addView", h.FarmAddView)
+		gis.GET("/gis/spr_farm/updateView/:id", h.FarmUpdateView)
+		gis.POST("/gis/spr_farm/add", h.CreateFarm)
+		gis.POST("/gis/spr_farm/update", h.updateFarm)
+		gis.GET("/gis/spr_farm/del/:id", h.deleteFarm)
 	}
 	//router.GET("/", h.homePage)
 

@@ -28,7 +28,7 @@ func (r *AuthPostgres) CreateUser(user gogis.User) (int, error) {
 
 // получение пользователя для отладки
 func (r *AuthPostgres) GetUsers() ([]gogis.User, error) {
-	query := "SELECT id, username, password email FROM users"
+	query := "SELECT id, username FROM users"
 	users := []gogis.User{}
 
 	rows, err := r.db.Query(query)
@@ -39,7 +39,7 @@ func (r *AuthPostgres) GetUsers() ([]gogis.User, error) {
 
 	for rows.Next() {
 		var user gogis.User
-		err = rows.Scan(&user.ID, &user.Username, &user.Email)
+		err = rows.Scan(&user.ID, &user.Username)
 		if err != nil {
 			return nil, err
 		}

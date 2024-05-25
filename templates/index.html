@@ -25,16 +25,34 @@
                         
                         
                     </div>
-                    <div class="col-md-2 shadow-lg block">
+                    <div class="col-md-2 shadow-lg block" id="otchet">
                         <div class="chart"><canvas id="myChart"></canvas></div>                       
                     </div>
                     <div class="col-md-5 shadow-lg block">
-                        <div class="chart1"><canvas id="myPieChart"></canvas></div>                     
+                        <div class="chart1"><canvas id="myPieChart"></canvas></div>
+                        
+                            <table class="table table-dark">
+
+                                <tr>
+                                    <td class="table-primary">Класс</td>
+                                    <td class="table-primary">Площадь</td>
+                                    <td class="table-primary">%</td>
+                                </tr>
+                                {{range .AvgOrganic}}
+                                <tr>
+                                    <td>{{.Class}}</td>
+                                    <td>{{printf "%.2f" .TotalArea}}</td>
+                                    <td>{{printf "%.2f" .Percentage}}</td>
+                                </tr>
+                                {{end}}
+                            </table>                     
                     </div>
 
                 <div class="row">
-                    <div class="col-md-3 shadow-lg block">
+                    <div class="col-md-3 shadow-lg block" id="otchet">
+                        
                         <h1>Загрязнения</h1>
+                        
                         <table class="table">
                             <tbody>
                                 <tr>
@@ -73,10 +91,40 @@
                         </table>
                     </div>
                     <div class="col-md-4 shadow-lg block">
-                        <div class="chart1"><canvas id="avgK"></canvas></div>  
+                        <div class="chart1"><canvas id="avgK"></canvas></div>
+                        <table class="table table-dark">
+
+                            <tr>
+                                <td class="table-primary">Класс</td>
+                                <td class="table-primary">Площадь</td>
+                                <td class="table-primary">%</td>
+                            </tr>
+                            {{range .AvgK}}
+                            <tr>
+                                <td>{{.Class}}</td>
+                                <td>{{printf "%.2f" .TotalArea}}</td>
+                                <td>{{printf "%.2f" .Percentage}}</td>
+                            </tr>
+                            {{end}}
+                        </table>     
                     </div>   
                     <div class="col-md-4 shadow-lg block">
-                        <div class="chart1"><canvas id="avgP"></canvas></div> 
+                        <div class="chart1"><canvas id="avgP"></canvas></div>
+                        <table class="table table-dark">
+
+                            <tr>
+                                <td class="table-primary">Класс</td>
+                                <td class="table-primary">Площадь</td>
+                                <td class="table-primary">%</td>
+                            </tr>
+                            {{range .AvgP}}
+                            <tr>
+                                <td>{{.Class}}</td>
+                                <td>{{printf "%.2f" .TotalArea}}</td>
+                                <td>{{printf "%.2f" .Percentage}}</td>
+                            </tr>
+                            {{end}}
+                        </table>    
                     </div> 
                         
                         
@@ -110,7 +158,7 @@
             </div>
         </div>
     </div>
-    
+
 
   
 <script>
@@ -266,7 +314,10 @@ var geojsonLayer = L.geoJSON(geojson, {
             console.log('ID value:', id_g);
             e.target.feature;      
             var infoContentHTML = 
-                      '<table class="table table-dark"><tr><td>Номер хозяйства:</td><td>' + feature.properties.Farm_name + '</td></tr>' +
+                      '<button class="form-control success" id="download-button">Скачать как Word</button>'+  
+                      '<table class="table table-dark" id="otch">' + 
+                      '<tr><td class="table-primary" colspan="2"><h3>Паспорт поля</h3></td></tr>' +    
+                      '<tr><td>Номер хозяйства:</td><td>' + feature.properties.Farm_name + '</td></tr>' +                    
                       '<tr><td>Номер поля:</td><td>' + feature.properties.Id_eu + '</td></tr>' +
                       '<tr><td>TLU:</td><td>' + feature.properties.Tlu_name + '</td></tr>' +
                       '<tr><td>Факт использования:</td><td>' + feature.properties.fact_isp + '</td></tr>' +
@@ -274,7 +325,7 @@ var geojsonLayer = L.geoJSON(geojson, {
                       '<tr><td>Площадь:</td><td>' + feature.properties.Area_f + '</td></tr>' +
                       '<tr><td>Культура:</td><td>' + feature.properties.Title + '</td></tr>' +
                       '<tr><td>Культура предудущая:</td><td>' + feature.properties.Title2 + '</td></tr>' +
-                      '<tr><td>Тип почв:</td><td>' + feature.properties.S_type + '</td></tr>' +
+                      '<tr><td>Тип почв:</td><td>' + feature.properties.T_pojv + '</td></tr>' +
                       '<tr><td>Подтип почв:</td><td>' + feature.properties.S_ptype + '</td></tr>' +
                       '<tr><td>Мех состав:</td><td>' + feature.properties.S_ms + '</td></tr>' +
                       '<tr><td>Индекс почв:</td><td>' + feature.properties.S_ind + '</td></tr>' +
@@ -307,7 +358,7 @@ var geojsonLayer = L.geoJSON(geojson, {
                       '<tr><td>Агрегированность:</td><td>' + feature.properties.Agreg +'</td></tr>'+ 
                       '<tr><td>Полевая влагоемкость:</td><td>' + feature.properties.Field_vl  +'</td></tr>'+
                       '<tr><td>Степень насыщения основаниями:</td><td>' + feature.properties.Nas_osn  +'</td></tr>'+ 
-                      '<tr><td>Степень каменистости:</td><td>' + feature.properties.Dgrd_st +'</td></tr>'+ 
+                      '<tr><td>Степень каменистости:</td><td>' + feature.properties.Kamn +'</td></tr>'+ 
                       '<tr><td>Уклоны поверхности:</td><td>' + feature.properties.Yklon +'</td></tr>'+ 
                       '<tr><td class="table-primary" colspan="2"><b>Загрязнения</b></td></tr>' +
                       '<tr><td>Загрязнение тяжелыми металлами:</td><td>' + feature.properties.Metals +'</td></tr>'+ 
@@ -341,7 +392,18 @@ var geojsonLayer = L.geoJSON(geojson, {
                       '</table>'; 
 
             showInfo(infoContentHTML);
-        
+            // Добавьте обработчик событий для кнопки
+        document.getElementById('download-button').addEventListener('click', function() {
+            // Получите HTML-элемент, который вы хотите перенести в Word
+            var element = document.getElementById('otch');
+            var html = element.outerHTML;
+            
+            // Преобразуйте HTML в Blob
+            var docx = htmlDocx.asBlob(html);
+            
+            // Сохраните Blob как файл Word на устройстве
+            saveAs(docx, 'document.docx');
+        });
             
         });
     }
@@ -388,6 +450,6 @@ var elements = document.getElementsByClassName('leaflet-attribution-flag');
     avgKStackedChart(avgK);
     avgPStackedChart(avgP); 
 </script>
-
+  
 </body>
 </html>

@@ -25,6 +25,23 @@ func (s *GisService) GetFieldByUser(id int, role int) (gogis.GeoJSON, error) {
 func (s *GisService) GetField() (gogis.GeoJSON, error) {
 	return s.repo.GetField()
 }
+
+func (s *GisService) CreateFarm(farm gogis.Farm) error {
+	return s.repo.CreateFarm(farm)
+}
+
+func (s *GisService) GetFarmByID(id int) (*gogis.Farm, error) {
+	return s.repo.GetFarmByID(id)
+}
+
+func (s *GisService) DeleteFarm(id int) error {
+	return s.repo.DeleteFarm(id)
+}
+
+func (s *GisService) UpdateFarm(farm gogis.Farm) error {
+	return s.repo.UpdateFarm(farm)
+}
+
 func (s *GisService) GetFieldData(id int, role int) ([]gogis.Field, error) {
 	return s.repo.GetFieldData(id, role)
 }
@@ -33,12 +50,22 @@ func (s *GisService) GetCult() ([]gogis.Cult, error) {
 	return s.repo.GetCult()
 }
 
+func (s *GisService) GetFarm() ([]gogis.Farm, error) {
+	return s.repo.GetFarm()
+}
+
+func (s *GisService) GetDistrict() ([]gogis.District, error) {
+	return s.repo.GetDistrict()
+}
+
 func (s *GisService) GetCultByID(id int) (*gogis.Cult, error) {
 	return s.repo.GetCultByID(id)
 }
+
 func (s *GisService) UpdateCult(cult gogis.Cult) error {
 	return s.repo.UpdateCult(cult)
 }
+
 func (s *GisService) CreateCult(cult gogis.Cult) error {
 	return s.repo.CreateCult(cult)
 }
@@ -98,7 +125,8 @@ type HumusData struct {
 	ID           int
 	Class        string
 	AverageValue float64
-	TotalArea    float64 // Общая площадь для класса
+	TotalArea    float64
+	Percentage   float64 // Общая площадь для класса
 }
 
 func (s *GisService) CalculateAverageHumusByClass(id int, role int) ([]HumusData, error) {
@@ -109,10 +137,12 @@ func (s *GisService) CalculateAverageHumusByClass(id int, role int) ([]HumusData
 
 	humusData := make(map[string]float64)
 	areaByClass := make(map[string]float64)
+	totalArea := 0.0
 
 	for _, field := range fields {
 		humusData[field.Humus_class] += field.Organic * field.Area_f
 		areaByClass[field.Humus_class] += field.Area_f
+		totalArea += field.Area_f
 	}
 
 	var result []HumusData
@@ -128,9 +158,10 @@ func (s *GisService) CalculateAverageHumusByClass(id int, role int) ([]HumusData
 
 	ids := 1
 	for class, totalOrganic := range humusData {
-		totalArea := areaByClass[class]
-		average := totalOrganic / totalArea
-		result = append(result, HumusData{ID: ids, Class: class, AverageValue: average, TotalArea: totalArea})
+		classArea := areaByClass[class]
+		average := totalOrganic / classArea
+		percentage := (classArea / totalArea) * 100
+		result = append(result, HumusData{ID: ids, Class: class, AverageValue: average, TotalArea: classArea, Percentage: percentage})
 		ids++
 	}
 
@@ -204,6 +235,7 @@ type NutrientData struct {
 	Class        string
 	AverageValue float64
 	TotalArea    float64
+	Percentage   float64
 }
 
 func (s *GisService) AvgPotassiumByClass(id int, role int) ([]NutrientData, error) {
@@ -214,10 +246,12 @@ func (s *GisService) AvgPotassiumByClass(id int, role int) ([]NutrientData, erro
 
 	potassiumData := make(map[string]float64)
 	areaByClass := make(map[string]float64)
+	totalArea := 0.0
 
 	for _, field := range fields {
 		potassiumData[field.Class_k] += field.El_k * field.Area_f
 		areaByClass[field.Class_k] += field.Area_f
+		totalArea += field.Area_f
 	}
 
 	var result []NutrientData
@@ -233,9 +267,10 @@ func (s *GisService) AvgPotassiumByClass(id int, role int) ([]NutrientData, erro
 
 	ids := 1
 	for class, totalPotassium := range potassiumData {
-		totalArea := areaByClass[class]
-		average := totalPotassium / totalArea
-		result = append(result, NutrientData{ID: ids, Class: class, AverageValue: average, TotalArea: totalArea})
+		classArea := areaByClass[class]
+		average := totalPotassium / classArea
+		percentage := (classArea / totalArea) * 100
+		result = append(result, NutrientData{ID: ids, Class: class, AverageValue: average, TotalArea: classArea, Percentage: percentage})
 		ids++
 	}
 
@@ -255,10 +290,12 @@ func (s *GisService) AvgPhosphorByClass(id int, role int) ([]NutrientData, error
 
 	phosphorusData := make(map[string]float64)
 	areaByClass := make(map[string]float64)
+	totalArea := 0.0
 
 	for _, field := range fields {
 		phosphorusData[field.Class_p] += field.El_p * field.Area_f
 		areaByClass[field.Class_p] += field.Area_f
+		totalArea += field.Area_f
 	}
 
 	var result []NutrientData
@@ -274,9 +311,10 @@ func (s *GisService) AvgPhosphorByClass(id int, role int) ([]NutrientData, error
 
 	ids := 1
 	for class, totalPhosphorus := range phosphorusData {
-		totalArea := areaByClass[class]
-		average := totalPhosphorus / totalArea
-		result = append(result, NutrientData{ID: ids, Class: class, AverageValue: average, TotalArea: totalArea})
+		classArea := areaByClass[class]
+		average := totalPhosphorus / classArea
+		percentage := (classArea / totalArea) * 100
+		result = append(result, NutrientData{ID: ids, Class: class, AverageValue: average, TotalArea: classArea, Percentage: percentage})
 		ids++
 	}
 
