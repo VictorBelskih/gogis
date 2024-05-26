@@ -60,7 +60,36 @@ function avgOrganicStackedChart(avgOrganic) {
     }
   });
 }
-
+function createPieChart(soilData) {
+  const labels = soilData.map(item => item.Type + ' ' + item.SubType);
+  const values = soilData.map(item => item.Area);
+  
+  const ctx = document.getElementById('soilChart').getContext('2d');
+  
+  const myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(153, 102, 255)', 'rgb(201, 203, 207)', 'rgb(255, 159, 64)', 'rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false,
+          position: 'bottom',
+        },
+        title: {
+          display: true,
+          text: 'Преобладающие типы почв'
+        }
+      }
+    }
+  });
+}
 function avgKStackedChart(avgK) {
   const labels = avgK.map(item => item.Class);
   const values = avgK.map(item => item.TotalArea);

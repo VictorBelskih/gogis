@@ -326,6 +326,49 @@ func (s *GisService) AvgPhosphorByClass(id int, role int) ([]NutrientData, error
 	return result, nil
 }
 
+type SoilData struct {
+	ID       int
+	Type     string
+	SubType  string
+	MechComp string
+	Area     float64
+}
+
+func (s *GisService) SoilTypesByArea(id int, role int) ([]SoilData, error) {
+	fields, err := s.repo.GetFieldData(id, role)
+	if err != nil {
+		return nil, err
+	}
+
+	var soilData []SoilData
+
+	for _, field := range fields {
+		found := false
+		for i, data := range soilData {
+			if data.Type == field.T_pojv && data.SubType == field.Sub_pojv && data.MechComp == field.Mex_sost {
+				soilData[i].Area += field.Area_f
+				found = true
+				break
+			}
+		}
+		if !found {
+			soilData = append(soilData, SoilData{ID: len(soilData) + 1, Type: field.T_pojv, SubType: field.Sub_pojv, MechComp: field.Mex_sost, Area: field.Area_f})
+		}
+	}
+
+	// Сортируем результаты по площади в порядке убывания
+	sort.Slice(soilData, func(i, j int) bool {
+		return soilData[i].Area > soilData[j].Area
+	})
+
+	// Возвращаем топ-10 типов и подтипов по площади
+	if len(soilData) > 10 {
+		soilData = soilData[:10]
+	}
+
+	return soilData, nil
+}
+
 // func (s *GisService) CalculateAverageHumusByClass() (map[string]float64, error) {
 // 	fields, err := s.repo.GetFieldData()
 // 	if err != nil {

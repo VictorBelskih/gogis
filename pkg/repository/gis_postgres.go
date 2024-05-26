@@ -127,8 +127,20 @@ func (r *GisPostgres) GetFieldByUser(id int, role int) (gogis.GeoJSON, error) {
 	var fields []gogis.Field // Используйте вашу структуру Field
 	query := `SELECT field_param.*, ST_AsGeoJSON(geom) as geom_json, 
 	tlu.tlu_name, cult.title, cult2.title as title2, farm.id as id_farm, farm.id_user, kamenistost.name as kamn,
-	type_pojv.name as t_pojv	
+	type_pojv.name as t_pojv, subtype_pojv.name as sub_pojv, mex_sost.name	as mex_sost, narushennye_zemli.name as f_narsh,
+	torf.name as f_torf, zagryaz.name as zagryaz, zakustarennost.name as kust, zalesennost.name as les,
+	zasorennost.name as sorn, zastroennost.name as stroy, prochie_zemli.name as prch 
 	FROM field_param
+	LEFT JOIN prochie_zemli ON field_param.Prochee=prochie_zemli.id 
+	LEFT JOIN zastroennost ON field_param.Zastroen=zastroennost.id  
+	LEFT JOIN zasorennost ON field_param.Zarast=zasorennost.id  
+	LEFT JOIN zalesennost ON field_param.Zales=zalesennost.id 
+	LEFT JOIN zakustarennost ON field_param.Zakust=zakustarennost.id 
+	LEFT JOIN zagryaz ON field_param.Metals=zagryaz.id
+	LEFT JOIN torf ON field_param.torf=torf.id
+	LEFT JOIN narushennye_zemli ON field_param.Narushen=narushennye_zemli.id
+	LEFT JOIN mex_sost ON field_param.S_ms=mex_sost.id
+	LEFT JOIN subtype_pojv ON field_param.S_ptype=subtype_pojv.id
 	LEFT JOIN kamenistost ON field_param.DGRD_ST=kamenistost.id
 	LEFT JOIN type_pojv ON field_param.s_type=type_pojv.id_pojv
 	LEFT JOIN tlu ON field_param.tlu = tlu.id
@@ -231,6 +243,16 @@ func (r *GisPostgres) GetFieldByUser(id int, role int) (gogis.GeoJSON, error) {
 			"Title2":      field.Title2,
 			"Kamn":        field.Kamn,
 			"T_pojv":      field.T_pojv,
+			"Sub_pojv":    field.Sub_pojv,
+			"Mex_sost":    field.Mex_sost,
+			"F_narsh":     field.F_narsh,
+			"F_torf":      field.F_torf,
+			"Zagryaz":     field.Zagryaz,
+			"Kust":        field.Kust,
+			"Les":         field.Les,
+			"Sorn":        field.Sorn,
+			"Stroy":       field.Stroy,
+			"Prch":        field.Prch,
 		}
 
 		feature := gogis.Feature{
@@ -251,7 +273,24 @@ func (r *GisPostgres) GetFieldByUser(id int, role int) (gogis.GeoJSON, error) {
 }
 func (r *GisPostgres) GetFieldData(id int, role int) ([]gogis.Field, error) {
 	var fields []gogis.Field
-	query := `SELECT field_param.*, ST_AsGeoJSON(geom) as geom_json, tlu.tlu_name, cult.title, cult2.title as title2, farm.id as id_farm, farm.id_user FROM field_param
+	query := `SELECT field_param.*, ST_AsGeoJSON(geom) as geom_json, 
+	tlu.tlu_name, cult.title, cult2.title as title2, farm.id as id_farm, farm.id_user, kamenistost.name as kamn,
+	type_pojv.name as t_pojv, subtype_pojv.name as sub_pojv, mex_sost.name	as mex_sost, narushennye_zemli.name as f_narsh,
+	torf.name as f_torf, zagryaz.name as zagryaz, zakustarennost.name as kust, zalesennost.name as les,
+	zasorennost.name as sorn, zastroennost.name as stroy, prochie_zemli.name as prch 
+	FROM field_param
+	LEFT JOIN prochie_zemli ON field_param.Prochee=prochie_zemli.id 
+	LEFT JOIN zastroennost ON field_param.Zastroen=zastroennost.id  
+	LEFT JOIN zasorennost ON field_param.Zarast=zasorennost.id  
+	LEFT JOIN zalesennost ON field_param.Zales=zalesennost.id 
+	LEFT JOIN zakustarennost ON field_param.Zakust=zakustarennost.id 
+	LEFT JOIN zagryaz ON field_param.Metals=zagryaz.id
+	LEFT JOIN torf ON field_param.torf=torf.id
+	LEFT JOIN narushennye_zemli ON field_param.Narushen=narushennye_zemli.id
+	LEFT JOIN mex_sost ON field_param.S_ms=mex_sost.id
+	LEFT JOIN subtype_pojv ON field_param.S_ptype=subtype_pojv.id
+	LEFT JOIN kamenistost ON field_param.DGRD_ST=kamenistost.id
+	LEFT JOIN type_pojv ON field_param.s_type=type_pojv.id_pojv
 	LEFT JOIN tlu ON field_param.tlu = tlu.id
 	LEFT JOIN cult ON field_param.crop = cult.id
 	LEFT JOIN cult as cult2 ON field_param.crop = cult2.id

@@ -5,8 +5,11 @@
                 <div class="row">
                     <div class="col-md-4 shadow-lg block ">
                         <h1>Информация о хозяйстве</h1>
+                        <p><a href="/report">Отчет</a></p>
                         <div class="inf">
-                            <h3>Усть-Абаканский район</h3>
+                            {{with index .FieldData 0}}
+                            <h3>{{.Reg_name}}</h3>
+                            {{end}}
                             <p>
                                 
                                 Общая площадь: {{.totalArea}}<br>
@@ -21,12 +24,31 @@
                                 
                                 
                             </p>
+                            <table class="table table-dark">
+
+                                <tr>
+                                    <td class="table-primary">Тип</td>
+                                    <td class="table-primary">Подтип</td>
+                                    <td class="table-primary">Мех.Состав</td>
+                                    <td class="table-primary">Площадь</td>
+                                </tr>
+                                {{range .SoilData}}
+                                <tr>
+                                    <td>{{.Type}}</td>
+                                    <td>{{.SubType}}</td>
+                                    <td>{{.MechComp}}</td>
+                                    <td>{{printf "%.1f" .Area}}</td>
+                                </tr>
+                                {{end}}
+                            </table> 
                         </div>
                         
-                        
+                            
                     </div>
                     <div class="col-md-2 shadow-lg block" id="otchet">
-                        <div class="chart"><canvas id="myChart"></canvas></div>                       
+                        <div class="chart"><canvas id="myChart"></canvas></div>
+                        <div class="chart"><canvas id="soilChart"></canvas></div> 
+                                              
                     </div>
                     <div class="col-md-5 shadow-lg block">
                         <div class="chart1"><canvas id="myPieChart"></canvas></div>
@@ -41,8 +63,8 @@
                                 {{range .AvgOrganic}}
                                 <tr>
                                     <td>{{.Class}}</td>
-                                    <td>{{printf "%.2f" .TotalArea}}</td>
-                                    <td>{{printf "%.2f" .Percentage}}</td>
+                                    <td>{{printf "%.1f" .TotalArea}}</td>
+                                    <td>{{printf "%.1f" .Percentage}}</td>
                                 </tr>
                                 {{end}}
                             </table>                     
@@ -102,8 +124,8 @@
                             {{range .AvgK}}
                             <tr>
                                 <td>{{.Class}}</td>
-                                <td>{{printf "%.2f" .TotalArea}}</td>
-                                <td>{{printf "%.2f" .Percentage}}</td>
+                                <td>{{printf "%.1f" .TotalArea}}</td>
+                                <td>{{printf "%.1f" .Percentage}}</td>
                             </tr>
                             {{end}}
                         </table>     
@@ -120,8 +142,8 @@
                             {{range .AvgP}}
                             <tr>
                                 <td>{{.Class}}</td>
-                                <td>{{printf "%.2f" .TotalArea}}</td>
-                                <td>{{printf "%.2f" .Percentage}}</td>
+                                <td>{{printf "%.1f" .TotalArea}}</td>
+                                <td>{{printf "%.1f" .Percentage}}</td>
                             </tr>
                             {{end}}
                         </table>    
@@ -326,8 +348,8 @@ var geojsonLayer = L.geoJSON(geojson, {
                       '<tr><td>Культура:</td><td>' + feature.properties.Title + '</td></tr>' +
                       '<tr><td>Культура предудущая:</td><td>' + feature.properties.Title2 + '</td></tr>' +
                       '<tr><td>Тип почв:</td><td>' + feature.properties.T_pojv + '</td></tr>' +
-                      '<tr><td>Подтип почв:</td><td>' + feature.properties.S_ptype + '</td></tr>' +
-                      '<tr><td>Мех состав:</td><td>' + feature.properties.S_ms + '</td></tr>' +
+                      '<tr><td>Подтип почв:</td><td>' + feature.properties.Sub_pojv + '</td></tr>' +
+                      '<tr><td>Мех состав:</td><td>' + feature.properties.Mex_sost + '</td></tr>' +
                       '<tr><td>Индекс почв:</td><td>' + feature.properties.S_ind + '</td></tr>' +
                       '<tr><td class="table-primary" colspan="2"><b>Показатели гумуса:</b></td></tr>' +
                       '<tr><td>Гумус:</td><td>' + feature.properties.Organic + '</td></tr>' +
@@ -352,7 +374,7 @@ var geojsonLayer = L.geoJSON(geojson, {
                       '<tr><td class="table-primary" colspan="2"><b>Прочая информация о поле</b></td></tr>' +
                       '<tr><td>Ил:</td><td>' + feature.properties.Il +'</td></tr>'+ 
                       '<tr><td>Глина:</td><td>' + feature.properties.Glina +'</td></tr>'+ 
-                      '<tr><td>Торф:</td><td>' + feature.properties.Torf +'</td></tr>'+ 
+                      '<tr><td>Торф:</td><td>' + feature.properties.F_torf +'</td></tr>'+ 
                       '<tr><td>Переувлажнение:</td><td>' + feature.properties.Pereyv +'</td></tr>'+ 
                       '<tr><td>Плотность:</td><td>' + feature.properties.Plotn +'</td></tr>'+ 
                       '<tr><td>Агрегированность:</td><td>' + feature.properties.Agreg +'</td></tr>'+ 
@@ -361,7 +383,7 @@ var geojsonLayer = L.geoJSON(geojson, {
                       '<tr><td>Степень каменистости:</td><td>' + feature.properties.Kamn +'</td></tr>'+ 
                       '<tr><td>Уклоны поверхности:</td><td>' + feature.properties.Yklon +'</td></tr>'+ 
                       '<tr><td class="table-primary" colspan="2"><b>Загрязнения</b></td></tr>' +
-                      '<tr><td>Загрязнение тяжелыми металлами:</td><td>' + feature.properties.Metals +'</td></tr>'+ 
+                      '<tr><td>Загрязнение тяжелыми металлами:</td><td>' + feature.properties.Zagryaz +'</td></tr>'+ 
                       '<tr><td>Содержание остаточных пестицидов:</td><td>' + feature.properties.Plt_tox +'</td></tr>'+ 
                       '<tr><td>Содержание нефтепродуктов:</td><td>' + feature.properties.Plt_oil +'</td></tr>'+ 
                       '<tr><td>Цезий-137:</td><td>' + feature.properties.Cs137 +'</td></tr>'+ 
@@ -375,12 +397,12 @@ var geojsonLayer = L.geoJSON(geojson, {
                       '<tr><td class="table-primary" colspan="2"><b>Почвы подверженные</b></td></tr>' +
                       '<tr><td>Ветровой эрозии:</td><td>' + feature.properties.Wind_er +'</td></tr>'+ 
                       '<tr><td>Водной эрозии:</td><td>' + feature.properties.Water_er  +'</td></tr>'+ 
-                      '<tr><td>Закустаренность:</td><td>' + feature.properties.Zakust+'</td></tr>'+ 
-                      '<tr><td>Залесенность:</td><td>' + feature.properties.Zales  +'</td></tr>'+ 
-                      '<tr><td>Степень зарастания:</td><td>' + feature.properties.Zarast +'</td></tr>'+ 
-                      '<tr><td>Застроеннные участки</td><td>' + feature.properties.Zastroen +'</td></tr>'+ 
-                      '<tr><td>Нарушение земельного участка</td><td>' + feature.properties.Narushen+'</td></tr>'+ 
-                      '<tr><td>Прочее</td><td>' + feature.properties.Prochee+'</td></tr>'+
+                      '<tr><td>Закустаренность:</td><td>' + feature.properties.Kust+'</td></tr>'+ 
+                      '<tr><td>Залесенность:</td><td>' + feature.properties.Les  +'</td></tr>'+ 
+                      '<tr><td>Степень зарастания:</td><td>' + feature.properties.Sorn +'</td></tr>'+ 
+                      '<tr><td>Застроеннные участки</td><td>' + feature.properties.Stroy +'</td></tr>'+ 
+                      '<tr><td>Нарушение земельного участка</td><td>' + feature.properties.F_narsh+'</td></tr>'+ 
+                      '<tr><td>Прочее</td><td>' + feature.properties.Prch+'</td></tr>'+
                       '<tr><td class="table-primary" colspan="2"><b>Мощность</b></td></tr>' +
                       '<tr><td>Мощность гумуса:</td><td>' + feature.properties.Mosh_g+'</td></tr>'+ 
                       '<tr><td>Мощность мелкозема:</td><td>' + feature.properties.Mosh_m  +'</td></tr>'+ 
@@ -448,7 +470,9 @@ var elements = document.getElementsByClassName('leaflet-attribution-flag');
     var avgK = {{.AvgK}};
     var avgP = {{.AvgP}}; 
     avgKStackedChart(avgK);
-    avgPStackedChart(avgP); 
+    avgPStackedChart(avgP);
+    var soilData = {{.SoilData}}
+    createPieChart(soilData) 
 </script>
   
 </body>

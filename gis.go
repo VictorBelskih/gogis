@@ -98,6 +98,16 @@ type Field struct {
 	Title2      string  `json:"Title2"`
 	Kamn        string  `json:"Kamn"`
 	T_pojv      string  `json:"T_pojv"`
+	Sub_pojv    string  `json:"Sub_pojv"`
+	Mex_sost    string  `json:"Mex_sost"`
+	F_narsh     string  `json:"F_narsh"`
+	F_torf      string  `json:"F_torf"`
+	Zagryaz     string  `json:"Zagryaz"`
+	Kust        string  `json:"Kust"`
+	Les         string  `json:"Les"`
+	Sorn        string  `json:"Sorn"`
+	Stroy       string  `json:"Stroy"`
+	Prch        string  `json:"Prch "`
 }
 
 // package gogis

@@ -26,7 +26,7 @@ type Gis interface {
 	AvgPhosphorByClass(id int, role int) ([]NutrientData, error)
 	AvgPotassiumByClass(id int, role int) ([]NutrientData, error)
 	TotalArea(id int, role int) (float64, error)
-
+	SoilTypesByArea(id int, role int) ([]SoilData, error)
 	//культура
 	GetCult() ([]gogis.Cult, error)
 	GetCultByID(id int) (*gogis.Cult, error)

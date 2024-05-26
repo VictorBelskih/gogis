@@ -43,6 +43,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	gis := router.Group("/", h.TokenAuthMiddleware())
 	{
 		gis.GET("/", h.gisPage)
+		gis.GET("/report", h.Report)
 		gis.GET("/gis/spr_cult", h.sprCult)
 		gis.GET("/gis/spr_cult/addView", h.CultAddView)
 		gis.POST("/gis/spr_cult/add", h.createCult)

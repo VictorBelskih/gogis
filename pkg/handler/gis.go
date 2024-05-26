@@ -89,6 +89,11 @@ func (h *Handler) gisPage(c *gin.Context) {
 		log.Println("Error Calculation AVG p", err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}
+	SoilData, err := h.services.Gis.SoilTypesByArea(intUserID, intUserRole)
+	if err != nil {
+		log.Println("Error Calculation soil", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
 	avgRad, err := h.services.Gis.CalculateRadionuclideSummary(intUserID, intUserRole)
 	data := gin.H{
 		"userID":               userID,
@@ -103,6 +108,7 @@ func (h *Handler) gisPage(c *gin.Context) {
 		"AvgK":                 AvgK,
 		"AvgP":                 AvgP,
 		"userField":            userField,
+		"SoilData":             SoilData,
 	}
 
 	render.RenderTemplate(c, "index", data)
@@ -583,4 +589,107 @@ func (h *Handler) updateFarm(c *gin.Context) {
 		// Перенаправление на страницу '/gis/spr_cult'
 		c.Redirect(http.StatusFound, "/gis/spr_farm")
 	}
+}
+func (h *Handler) Report(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		// userID не найден в контексте, обработка ошибки
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Не удалось получить userID"})
+		return
+	}
+	// Приведение типа к int
+	intUserID, ok := userID.(int)
+	if !ok {
+		// userID не может быть приведен к типу int, обработка ошибки
+		c.JSON(http.StatusBadRequest, gin.H{"error": "userID должен быть целым числом"})
+		return
+	}
+	username, exists := c.Get("username")
+	if !exists {
+		// username не найден в контексте, обработка ошибки
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Не удалось получить username"})
+		return
+	}
+	role, exists := c.Get("role")
+	if !exists {
+		// username не найден в контексте, обработка ошибки
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Не удалось получить role"})
+		return
+	}
+	intUserRole, ok := role.(int)
+	if !ok {
+		// userID не может быть приведен к типу int, обработка ошибки
+		c.JSON(http.StatusBadRequest, gin.H{"error": "userID должен быть целым числом"})
+		return
+	}
+	userField, err := h.services.Gis.GetFieldByUser(intUserID, intUserRole)
+	if err != nil {
+		// Handle error fetching fields, for example, log or display a message to the user
+		log.Println("Error fetching fields:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	fields, err := h.services.Gis.GetField()
+	if err != nil {
+		// Handle error fetching fields, for example, log or display a message to the user
+		log.Println("Error fetching fields:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	FieldData, err := h.services.Gis.GetFieldData(intUserID, intUserRole)
+	if err != nil {
+		// Handle error fetching fields, for example, log or display a message to the user
+		log.Println("Error fetching fields:", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	totalAreaByFieldType, err := h.services.Gis.CalculateTotalAreaByFieldType(intUserID, intUserRole)
+	if err != nil {
+		log.Println("Error Calculation Area", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+	totalArea, err := h.services.Gis.TotalArea(intUserID, intUserRole)
+	if err != nil {
+		log.Println("Error Calculation Area", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+	avgOrganic, err := h.services.Gis.CalculateAverageHumusByClass(intUserID, intUserRole)
+	if err != nil {
+		log.Println("Error Calculation AVG Organic", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+	AvgK, err := h.services.Gis.AvgPotassiumByClass(intUserID, intUserRole)
+	if err != nil {
+		log.Println("Error Calculation AVG k", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+	AvgP, err := h.services.Gis.AvgPhosphorByClass(intUserID, intUserRole)
+	if err != nil {
+		log.Println("Error Calculation AVG p", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+	SoilData, err := h.services.Gis.SoilTypesByArea(intUserID, intUserRole)
+	if err != nil {
+		log.Println("Error Calculation soil", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+	avgRad, err := h.services.Gis.CalculateRadionuclideSummary(intUserID, intUserRole)
+	data := gin.H{
+		"userID":               userID,
+		"username":             username,
+		"role":                 role,
+		"fields":               fields,
+		"FieldData":            FieldData,
+		"totalAreaByFieldType": totalAreaByFieldType,
+		"totalArea":            totalArea,
+		"AvgOrganic":           avgOrganic,
+		"avgRad":               avgRad,
+		"AvgK":                 AvgK,
+		"AvgP":                 AvgP,
+		"userField":            userField,
+		"SoilData":             SoilData,
+	}
+
+	render.RenderTemplate(c, "report", data)
 }

@@ -1,0 +1,187 @@
+{{ template "header.html" . }}
+<div class="col py-3 content">
+    <div class="row">
+    <div id="otchet" class="col-md-11 shadow-lg block">
+    <button id="download-button">Скачать</button>
+    <h1>Отчет</h1>
+    {{with index .FieldData 0}}
+        <h3>{{.Reg_name}}</h3>
+    {{end}}
+    <h3>Преобладающие почвы</h3>
+    <table style="width: 100%;
+	margin-bottom: 20px;
+	border: 1px solid #dddddd;
+	border-collapse: collapse;">
+        <tr>
+            <td style="border: 1px solid #dddddd;
+            padding: 5px;">Тип</td>
+            <td style="border: 1px solid #dddddd;
+            padding: 5px;">Подтип</td>
+            <td style="border: 1px solid #dddddd;
+            padding: 5px;">Мех.Состав</td>
+            <td style="border: 1px solid #dddddd;
+            padding: 5px;">Площадь</td>
+        </tr>
+        {{range .SoilData}}
+        <tr>
+            <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{.Type}}</td>
+            <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{.SubType}}</td>
+            <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{.MechComp}}</td>
+            <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{printf "%.1f" .Area}}</td>
+        </tr>
+        {{end}}
+    </table> 
+    <h3>Загрязнения</h3>
+                        
+    <table style="width: 100%;
+	margin-bottom: 20px;
+	border: 1px solid #dddddd;
+	border-collapse: collapse;">
+                            <tbody>
+                                <tr>
+                                    <td style="border: 1px solid #dddddd;
+            padding: 5px;">Среднее содержание цезия:</td>
+                                    <td style="border: 1px solid #dddddd;
+                                    padding: 5px;">{{printf "%.4f" .avgRad.AverageCesium}} Бк/кг</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #dddddd;
+            padding: 5px;">Среднее содержание стронция:</td>
+                                    <td style="border: 1px solid #dddddd;
+                                    padding: 5px;">{{printf "%.4f" .avgRad.AverageStrontium}} Бк/кг</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #dddddd;
+            padding: 5px;">Максимальное содержание цезия:</td>
+                                    <td style="border: 1px solid #dddddd;
+                                    padding: 5px;">{{printf "%.4f" .avgRad.MaxCesium}} Бк/кг</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #dddddd;
+            padding: 5px;">Максимальное содержание стронция:</td>
+                                    <td style="border: 1px solid #dddddd;
+                                    padding: 5px;">{{printf "%.4f" .avgRad.MaxStrontium}} Бк/кг</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #dddddd;
+            padding: 5px;">Средняя плотность<br> загрязнения цезием:</td>
+                                    <td style="border: 1px solid #dddddd;
+                                    padding: 5px;">{{printf "%.4f" .avgRad.AvgDensityCs137}} Ku/кв. км </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #dddddd;
+            padding: 5px;">Средняя плотность<br> загрязнения стронцием:</td>
+                                    <td style="border: 1px solid #dddddd;
+                                    padding: 5px;">{{printf "%.4f" .avgRad.AvgDensitySr90}} Ku/кв. км</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #dddddd;
+            padding: 5px;">Максимальная плотность<br> загрязнения цезием:</td>
+                                    <td style="border: 1px solid #dddddd;
+                                    padding: 5px;">{{printf "%.4f" .avgRad.MaxDensityCs137}} Ku/кв. км</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid #dddddd;
+            padding: 5px;">Максимальная плотность<br> загрязнения стронцием:</td>
+                                    <td style="border: 1px solid #dddddd;
+                                    padding: 5px;">{{printf "%.4f" .avgRad.MaxDensitySr90}} Ku/кв. км</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3>Содержание органического вещества в почве</h3>           
+                        <table style="width: 100%;
+	margin-bottom: 20px;
+	border: 1px solid #dddddd;
+	border-collapse: collapse;">
+
+                            <tr>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">Класс</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">Площадь</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">%</td>
+                            </tr>
+                            {{range .AvgOrganic}}
+                            <tr>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{.Class}}</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{printf "%.1f" .TotalArea}}</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{printf "%.1f" .Percentage}}</td>
+                            </tr>
+                            {{end}}
+                        </table>
+                        <h3>Содержание калия в почве</h3> 
+                        <table style="width: 100%;
+	margin-bottom: 20px;
+	border: 1px solid #dddddd;
+	border-collapse: collapse;">
+
+                            <tr>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">Класс</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">Площадь</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">%</td>
+                            </tr>
+                            {{range .AvgK}}
+                            <tr>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{.Class}}</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{printf "%.1f" .TotalArea}}</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{printf "%.1f" .Percentage}}</td>
+                            </tr>
+                            {{end}}
+                        </table>
+                        <h3>Содержание фосфора в почве</h3>
+                        <table style="width: 100%;
+	margin-bottom: 20px;
+	border: 1px solid #dddddd;
+	border-collapse: collapse;">
+
+                            <tr>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">Класс</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">Площадь</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">%</td>
+                            </tr>
+                            {{range .AvgP}}
+                            <tr>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{.Class}}</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{printf "%.1f" .TotalArea}}</td>
+                                <td style="border: 1px solid #dddddd;
+            padding: 5px;">{{printf "%.1f" .Percentage}}</td>
+                            </tr>
+                            {{end}}
+                        </table>           
+</div>
+</div>
+</div>
+<script>
+    document.getElementById('download-button').addEventListener('click', function() {
+            // Получите HTML-элемент, который вы хотите перенести в Word
+            var element = document.getElementById('otchet');
+            var html = element.outerHTML;
+            
+            // Преобразуйте HTML в Blob
+            var docx = htmlDocx.asBlob(html);
+            
+            // Сохраните Blob как файл Word на устройстве
+            saveAs(docx, 'document.docx');
+        });
+</script>
+</body>
+</html>
